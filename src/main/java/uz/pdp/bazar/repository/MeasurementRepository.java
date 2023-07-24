@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MeasurementRepository extends JpaRepository<Measurement,Integer> {
 
-    List<Measurement> findAllByBranchIdAndActiveTrue(Integer branchId);
+    List<Measurement> findAllByActiveTrue();
 
-    boolean existsByNameAndBranchIdAndActiveTrue(String name, Integer branchId);
+    boolean existsByNameAndActiveTrue(String name);
 }

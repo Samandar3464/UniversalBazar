@@ -14,5 +14,4 @@ public class MeasurementDto {
 
     private String name;
 
-    private Integer branchId;
 }

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.pdp.bazar.entity.Branch;
+import uz.pdp.bazar.entity.Market;
 import uz.pdp.bazar.entity.Measurement;
 import uz.pdp.bazar.entity.Product;
 import uz.pdp.bazar.exception.RecordAlreadyExistException;
@@ -15,7 +15,7 @@ import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.ProductDto;
 import uz.pdp.bazar.model.response.ProductResponseList;
-import uz.pdp.bazar.repository.BranchRepository;
+import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.MeasurementRepository;
 import uz.pdp.bazar.repository.ProductRepository;
 
@@ -28,18 +28,18 @@ public class ProductService implements BaseService<ProductDto, Integer> {
 
     private final ProductRepository productRepository;
     private final MeasurementRepository measurementRepository;
-    private final BranchRepository branchRepository;
+    private final MarketRepository marketRepository;
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse create(ProductDto dto) {
-        if (productRepository.existsByBranchIdAndMeasurementIdAndName(dto.getBranchId(), dto.getMeasurementId(), dto.getName())) {
+        if (productRepository.existsByMarketIdAndMeasurementIdAndName(dto.getBranchId(), dto.getMeasurementId(), dto.getName())) {
             throw new RecordAlreadyExistException(PRODUCT_ALREADY_EXIST);
         }
-        Branch branch = branchRepository.findById(dto.getBranchId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        Market market = marketRepository.findById(dto.getBranchId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
         Measurement measurement = measurementRepository.findById(dto.getMeasurementId()).orElseThrow(() -> new RecordNotFoundException(MEASUREMENT_NOT_FOUND));
         Product product = Product.builder()
-                .branch(branch)
+                .market(market)
                 .measurement(measurement)
                 .name(dto.getName())
                 .description(dto.getDescription())
@@ -82,7 +82,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByBranchId(Integer page, Integer size, Integer integer) {
         Pageable page1 = PageRequest.of(page, size);
-        Page<Product> product = productRepository.findAllByBranchId(integer, page1);
+        Page<Product> product = productRepository.findAllByMarketId(integer, page1);
         ProductResponseList productResponseList = ProductResponseList.builder()
                 .products(product.getContent())
                 .totalElement(product.getTotalElements())

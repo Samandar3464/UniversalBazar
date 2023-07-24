@@ -7,14 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.pdp.bazar.entity.Branch;
+import uz.pdp.bazar.entity.Market;
 import uz.pdp.bazar.entity.User;
 import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.exception.UserNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
-import uz.pdp.bazar.model.request.BranchDto;
+import uz.pdp.bazar.model.request.MarketDto;
 import uz.pdp.bazar.model.response.BranchResponseListForAdmin;
-import uz.pdp.bazar.repository.BranchRepository;
+import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
 import java.util.Optional;
@@ -24,58 +24,58 @@ import static uz.pdp.bazar.enums.Constants.*;
 
 @RequiredArgsConstructor
 @Service
-public class BranchService implements BaseService<BranchDto, Integer> {
+public class MarketService implements BaseService<MarketDto, Integer> {
 
-    private final BranchRepository branchRepository;
+    private final MarketRepository marketRepository;
     private final UserRepository userRepository;
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse create(BranchDto branch) {
-        Optional<Branch> byName = branchRepository.findByName(branch.getName());
+    public ApiResponse create(MarketDto branch) {
+        Optional<Market> byName = marketRepository.findByName(branch.getName());
         if (byName.isPresent()) {
             throw new RecordNotFoundException(MARKET_NAME_ALREADY_EXIST);
         }
-        Optional<Branch> byBusinessIdAndName = branchRepository.findByUserIdAndName(branch.getUserId(),branch.getName());
+        Optional<Market> byBusinessIdAndName = marketRepository.findByUserIdAndName(branch.getUserId(),branch.getName());
         if (byBusinessIdAndName.isPresent()) {
             throw new RecordNotFoundException(THIS_USER_ALREADY_HAVE_MARKET);
         }
         User user = userRepository.findById(branch.getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        Branch branchNew = Branch.from(branch, user);
-        branchRepository.save(branchNew);
+        Market marketNew = Market.from(branch, user);
+        marketRepository.save(marketNew);
         return new ApiResponse(SUCCESSFULLY, true);
     }
 
     @Override
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getById(Integer integer) {
-        Branch branch = branchRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
-        return new ApiResponse(branch, true);
+        Market market = marketRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        return new ApiResponse(market, true);
     }
 
     @Override
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse update(BranchDto dto) {
-        Branch branch = branchRepository.findById(dto.getId()).orElseThrow(()-> new RecordNotFoundException(MARKET_NOT_FOUND));
-        branch.setName(branch.getName());
-        branch.setActive(dto.isActive());
-        branchRepository.save(branch);
+    public ApiResponse update(MarketDto dto) {
+        Market market = marketRepository.findById(dto.getId()).orElseThrow(()-> new RecordNotFoundException(MARKET_NOT_FOUND));
+        market.setName(market.getName());
+        market.setActive(dto.isActive());
+        marketRepository.save(market);
         return new ApiResponse(SUCCESSFULLY, true);
     }
 
     @Override
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse delete(Integer integer) {
-        Branch branch = branchRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
-        branch.setDelete(true);
-        branch.setActive(false);
-        branchRepository.save(branch);
+        Market market = marketRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        market.setDelete(true);
+        market.setActive(false);
+        marketRepository.save(market);
         return new ApiResponse(DELETED, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(Integer integer) {
-        Optional<Branch> allByBusinessId = branchRepository.findAllByUserIdAndDeleteFalse(integer);
+        Optional<Market> allByBusinessId = marketRepository.findAllByUserIdAndDeleteFalse(integer);
         if (allByBusinessId.isPresent()) {
             throw new RecordNotFoundException(MARKET_NOT_FOUND);
         }
@@ -85,7 +85,7 @@ public class BranchService implements BaseService<BranchDto, Integer> {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Branch> all = branchRepository.findAllByDeleteFalse(pageable);
+        Page<Market> all = marketRepository.findAllByDeleteFalse(pageable);
         return new ApiResponse(new BranchResponseListForAdmin(
                 all.getContent(), all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
     }

@@ -1,4 +1,4 @@
-package uz.pdp.bazar.entity;
+package uz.pdp.bazar.model.request;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,14 +8,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-public class Measurement {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CategoryDto {
+
+
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
 
-    private boolean active;
-
+    @ManyToOne
+    private Integer parentCategoryId;
 }

@@ -8,8 +8,8 @@ import uz.pdp.bazar.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    Page<Product> findAllByBranchId(Integer branchId, Pageable pageable);
+    Page<Product> findAllByMarketId(Integer marketId, Pageable pageable);
 
-    boolean existsByBranchIdAndMeasurementIdAndName(Integer branchId, Integer measurementId, String name);
+    boolean existsByMarketIdAndMeasurementIdAndName(Integer marketId, Integer measurementId, String name);
 
 }

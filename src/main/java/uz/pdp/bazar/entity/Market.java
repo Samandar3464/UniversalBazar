@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import uz.pdp.bazar.model.request.BranchDto;
+import uz.pdp.bazar.model.request.MarketDto;
 
 @Getter
 @Setter
@@ -12,7 +12,7 @@ import uz.pdp.bazar.model.request.BranchDto;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Branch {
+public class Market {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +29,8 @@ public class Branch {
 
     private boolean active;
 
-    public static Branch from(BranchDto branch,User user) {
-        return Branch.builder()
+    public static Market from(MarketDto branch, User user) {
+        return Market.builder()
                 .name(branch.getName())
                 .user(user)
                 .delete(false)

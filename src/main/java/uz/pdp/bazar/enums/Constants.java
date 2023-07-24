@@ -39,5 +39,6 @@ public class Constants {
     public static final String PRODUCT_NOT_FOUND = "PRODUCT NOT FOUND";
     public static final String PRODUCT_ALREADY_EXIST = "PRODUCT ALREADY EXIST";
     public static final String ROLE_NOT_FOUND = "ROLE NOT FOUND";
-    public static final String PARENT_ROLE_NOT_FOUND = "PARENT ROLE NOT FOUND";
+    public static final String CATEGORY_NOT_FOUND = "CATEGORY NOT FOUND";
+    public static final String CATEGORY_ALREADY_EXIST = "CATEGORY ALREADY EXIST";
 }

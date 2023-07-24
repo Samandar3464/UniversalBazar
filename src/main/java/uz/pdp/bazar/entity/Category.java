@@ -1,8 +1,9 @@
 package uz.pdp.bazar.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -10,24 +11,18 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Product {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
 
-    private String description;
-
-    private boolean deleted;
-
-    private double price;
-
     @ManyToOne
-    private Measurement measurement;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Category parentCategory;
 
-    @JsonIgnore
-    @ManyToOne
-    private Market market;
+    private boolean active;
 }

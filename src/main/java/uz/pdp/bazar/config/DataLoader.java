@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import uz.pdp.bazar.entity.Branch;
+import uz.pdp.bazar.entity.Market;
 import uz.pdp.bazar.entity.Role;
 import uz.pdp.bazar.entity.User;
 import uz.pdp.bazar.enums.Gender;
-import uz.pdp.bazar.repository.BranchRepository;
+import uz.pdp.bazar.repository.MarketRepository;
+import uz.pdp.bazar.repository.CategoryRepository;
 import uz.pdp.bazar.repository.RoleRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
@@ -27,7 +28,8 @@ public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final BranchRepository branchRepository;
+    private final MarketRepository marketRepository;
+    private final CategoryRepository categoryRepository;
 
     @Value("${spring.sql.init.mode}")
     private String initMode;
@@ -85,13 +87,19 @@ public class DataLoader implements CommandLineRunner {
             userRepository.save(user1);
 
 
-            Branch branch = Branch.builder()
+            Market market = Market.builder()
                     .name("Test Branch")
                     .user(saveAdmin)
                     .delete(false)
                     .active(true)
                     .build();
-            branchRepository.save(branch);
+            marketRepository.save(market);
+
+//            Category category = Category.builder()
+//                    .name("BIG CATEGORY")
+//                    .parentCategory(null)
+//                    .build();
+//            categoryRepository.save(category);
         }
     }
 }

@@ -33,9 +33,9 @@ public class MeasurementController {
         return measurementService.delete(id);
     }
 
-    @GetMapping("/getByBranchId/{id}")
-    public ApiResponse getByBranchId(@PathVariable Integer id) {
-        return measurementService.getByBranchId(id);
+    @GetMapping("/getAll")
+    public ApiResponse getAll() {
+        return measurementService.getAll();
     }
 
 }

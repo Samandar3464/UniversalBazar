@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BranchDto {
+public class MarketDto {
 
     private Integer id;
 

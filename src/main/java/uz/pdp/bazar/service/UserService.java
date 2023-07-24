@@ -25,7 +25,6 @@ import uz.pdp.bazar.model.response.NotificationMessageResponse;
 import uz.pdp.bazar.model.response.TokenResponse;
 import uz.pdp.bazar.model.response.UserResponseDto;
 import uz.pdp.bazar.model.response.UserResponseListForAdmin;
-import uz.pdp.bazar.repository.BranchRepository;
 import uz.pdp.bazar.repository.RoleRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
