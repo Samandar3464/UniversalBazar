@@ -3,6 +3,8 @@ package uz.pdp.bazar.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -18,9 +20,13 @@ public class Product {
 
     private String name;
 
+    private double quantity;
+
     private String description;
 
     private boolean deleted;
+
+    private boolean active;
 
     private double price;
 
@@ -29,5 +35,6 @@ public class Product {
 
     @JsonIgnore
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Market market;
 }

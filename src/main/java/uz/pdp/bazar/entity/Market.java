@@ -1,5 +1,6 @@
 package uz.pdp.bazar.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -23,16 +24,22 @@ public class Market {
 
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User user;
 
     private boolean delete;
 
     private boolean active;
 
+    private long longitude;
+    private long latitude;
+
     public static Market from(MarketDto branch, User user) {
         return Market.builder()
                 .name(branch.getName())
                 .user(user)
+                .longitude(branch.getLongitude())
+                .latitude(branch.getLatitude())
                 .delete(false)
                 .active(true)
                 .build();

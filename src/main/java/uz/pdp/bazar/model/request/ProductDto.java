@@ -15,6 +15,8 @@ public class ProductDto {
 
     private String name;
 
+    private double quantity;
+
     private String description;
 
     private Integer measurementId;

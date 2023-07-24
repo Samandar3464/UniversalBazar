@@ -20,5 +20,7 @@ public class MarketDto {
     private Integer userId;
 
     private boolean active;
+    private long longitude;
+    private long latitude;
 
 }

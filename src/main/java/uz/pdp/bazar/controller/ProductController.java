@@ -33,11 +33,26 @@ public class ProductController {
         return productService.delete(id);
     }
 
-    @GetMapping("/getByBranchId")
-    public ApiResponse getByBranchId(
+    @GetMapping("/getAllByMarketId")
+    public ApiResponse getByMarketIdId(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "id") Integer id) {
-        return productService.getByBranchId(page, size, id);
+        return productService.getAllByMarketId(page, size, id);
     }
+
+    @GetMapping("/getNeactive")
+    public ApiResponse getNeActive(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        return productService.getAllNeActivatedProducts(page, size);
+    }
+
+    @GetMapping("/activate/{id}")
+    public ApiResponse activate(@PathVariable Integer id) {
+        return productService.activateProduct(id);
+    }
+
+
+
 }

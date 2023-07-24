@@ -59,6 +59,8 @@ public class MarketService implements BaseService<MarketDto, Integer> {
         Market market = marketRepository.findById(dto.getId()).orElseThrow(()-> new RecordNotFoundException(MARKET_NOT_FOUND));
         market.setName(market.getName());
         market.setActive(dto.isActive());
+        market.setLongitude(dto.getLongitude());
+        market.setLatitude(dto.getLatitude());
         marketRepository.save(market);
         return new ApiResponse(SUCCESSFULLY, true);
     }
@@ -75,11 +77,11 @@ public class MarketService implements BaseService<MarketDto, Integer> {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(Integer integer) {
-        Optional<Market> allByBusinessId = marketRepository.findAllByUserIdAndDeleteFalse(integer);
-        if (allByBusinessId.isPresent()) {
+        Optional<Market> allByUserId = marketRepository.findAllByUserIdAndDeleteFalse(integer);
+        if (allByUserId.isPresent()) {
             throw new RecordNotFoundException(MARKET_NOT_FOUND);
         }
-        return new ApiResponse(allByBusinessId, true);
+        return new ApiResponse(allByUserId, true);
     }
 
     @ResponseStatus(HttpStatus.OK)

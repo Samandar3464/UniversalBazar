@@ -42,9 +42,11 @@ public class ProductService implements BaseService<ProductDto, Integer> {
                 .market(market)
                 .measurement(measurement)
                 .name(dto.getName())
+                .quantity(dto.getQuantity())
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .deleted(false)
+                .active(false)
                 .build();
         productRepository.save(product);
         return new ApiResponse(SUCCESSFULLY, true);
@@ -57,6 +59,8 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         return new ApiResponse(product, true);
     }
 
+
+
     @Override
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse update(ProductDto dto) {
@@ -66,6 +70,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         product.setPrice(dto.getPrice());
         product.setMeasurement(measurement);
         product.setDescription(dto.getDescription());
+        product.setQuantity(dto.getQuantity());
         productRepository.save(product);
         return new ApiResponse(SUCCESSFULLY, true);
     }
@@ -80,9 +85,9 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse getByBranchId(Integer page, Integer size, Integer integer) {
+    public ApiResponse getAllByMarketId(Integer page, Integer size, Integer integer) {
         Pageable page1 = PageRequest.of(page, size);
-        Page<Product> product = productRepository.findAllByMarketId(integer, page1);
+        Page<Product> product = productRepository.findAllByMarketIdAndActiveTrueAndDeletedFalse(integer, page1);
         ProductResponseList productResponseList = ProductResponseList.builder()
                 .products(product.getContent())
                 .totalElement(product.getTotalElements())
@@ -90,5 +95,18 @@ public class ProductService implements BaseService<ProductDto, Integer> {
                 .size(product.getSize())
                 .build();
         return new ApiResponse(productResponseList, true);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse activateProduct(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RecordNotFoundException(PRODUCT_NOT_FOUND));
+        product.setActive(true);
+        productRepository.save(product);
+        return new ApiResponse(SUCCESSFULLY, true);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getAllNeActivatedProducts(Integer page, Integer size) {
+        Pageable page1 = PageRequest.of(page, size);
+        Page<Product> products = productRepository.findAllByActiveFalseAndDeletedFalse(page1);
+        return new ApiResponse(products, true);
     }
 }
