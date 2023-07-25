@@ -17,6 +17,7 @@ import uz.pdp.bazar.model.response.BranchResponseListForAdmin;
 import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static uz.pdp.bazar.enums.Constants.*;
@@ -90,5 +91,19 @@ public class MarketService implements BaseService<MarketDto, Integer> {
         Page<Market> all = marketRepository.findAllByDeleteFalse(pageable);
         return new ApiResponse(new BranchResponseListForAdmin(
                 all.getContent(), all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
+    }
+
+    public ApiResponse deActive(Integer integer) {
+        Market market = marketRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        market.setActive(false);
+        marketRepository.save(market);
+        return new ApiResponse(market, true);
+    }
+    public ApiResponse activate(Integer integer, LocalDate newActiveDay) {
+        Market market = marketRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        market.setActive(true);
+        market.setActiveDay(newActiveDay);
+        marketRepository.save(market);
+        return new ApiResponse(market, true);
     }
 }

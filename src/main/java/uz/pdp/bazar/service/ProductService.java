@@ -40,10 +40,10 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse create(ProductDto dto) {
-        if (productRepository.existsByMarketIdAndMeasurementIdAndName(dto.getBranchId(), dto.getMeasurementId(), dto.getName())) {
+        if (productRepository.existsByMarketIdAndMeasurementIdAndName(dto.getMarketId(), dto.getMeasurementId(), dto.getName())) {
             throw new RecordAlreadyExistException(PRODUCT_ALREADY_EXIST);
         }
-        Market market = marketRepository.findById(dto.getBranchId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        Market market = marketRepository.findById(dto.getMarketId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
         Measurement measurement = measurementRepository.findById(dto.getMeasurementId()).orElseThrow(() -> new RecordNotFoundException(MEASUREMENT_NOT_FOUND));
         List<Attachment> attachments = attachmentService.saveToSystemListFile(dto.getPhotos());
         Product product = Product.builder()
@@ -111,9 +111,9 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse getAllByMarketIdForUsers(Integer page, Integer size, Integer integer) {
+    public ApiResponse getAllByMarketIdForUsers(Integer page, Integer size, Integer marketId) {
         Pageable page1 = PageRequest.of(page, size);
-        Page<Product> productList = productRepository.findAllByQuantityGreaterThanAndMarketIdAndActiveTrueAndDeletedFalse(0, integer, page1);
+        Page<Product> productList = productRepository.findAllByQuantityGreaterThanAndMarketIdAndActiveTrueAndDeletedFalse(0, marketId, page1);
         List<ProductResponse> productResponses = new ArrayList<>();
         productList.getContent().forEach(product1 -> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
@@ -149,7 +149,8 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getAll(Integer page, Integer size) {
         Pageable page1 = PageRequest.of(page, size);
-        Page<Product> productList = productRepository.findAllByQuantityGreaterThanAndActiveTrueAndDeletedFalseOrderByCreatedDateDesc(0, page1);
+        List<Market> marketList = marketRepository.findAllByActiveTrueAndDeleteFalse();
+        Page<Product> productList = productRepository.findAllByQuantityGreaterThanAndMarketInAndActiveTrueAndDeletedFalseOrderByCreatedDateDesc(0, marketList, page1);
         List<ProductResponse> productResponses = new ArrayList<>();
         productList.getContent().forEach(product1 -> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));

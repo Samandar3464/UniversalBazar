@@ -1,6 +1,11 @@
 package uz.pdp.bazar.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -37,6 +42,7 @@ public class Market {
 
     private long latitude;
 
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate activeDay;
 
     public static Market from(MarketDto dto, User user) {

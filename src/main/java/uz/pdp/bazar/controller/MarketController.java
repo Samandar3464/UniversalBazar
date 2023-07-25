@@ -8,9 +8,11 @@ import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.MarketDto;
 import uz.pdp.bazar.service.MarketService;
 
+import java.time.LocalDate;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/branch")
+@RequestMapping("/api/v1/market")
 public class MarketController {
 
     private final MarketService marketService;
@@ -47,4 +49,16 @@ public class MarketController {
             @RequestParam(name = "size", defaultValue = "5") int size) {
         return marketService.getAll(page, size);
     }
+
+    @GetMapping("/activate")
+    public ApiResponse activate(@RequestParam(name = "id") Integer id, @RequestParam(name = "day") LocalDate day) {
+        return marketService.activate(id, day);
+    }
+
+    @GetMapping("/deactivate/{id}")
+    public ApiResponse deactivate(@PathVariable Integer id) {
+        return marketService.deActive(id);
+    }
+
+
 }

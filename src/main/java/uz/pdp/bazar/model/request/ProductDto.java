@@ -24,7 +24,7 @@ public class ProductDto {
 
     private Integer measurementId;
 
-    private Integer branchId;
+    private Integer marketId;
 
     private double price;
 
