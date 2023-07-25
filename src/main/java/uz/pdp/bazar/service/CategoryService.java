@@ -25,13 +25,17 @@ public class CategoryService implements BaseService<CategoryDto, Integer> {
         if (categoryRepository.existsByNameAndParentCategoryIdAndActiveTrue(dto.getName(), dto.getParentCategoryId())) {
             throw new RecordAlreadyExistException(CATEGORY_ALREADY_EXIST);
         }
-        Category parentC = categoryRepository.findById(dto.getParentCategoryId()).orElseThrow(() -> new RecordAlreadyExistException(CATEGORY_NOT_FOUND));
-        Category category = Category.builder()
+        Category category = null;
+        if (dto.getParentCategoryId()!=null){
+            category = categoryRepository.findById(dto.getParentCategoryId()).orElseThrow(() -> new RecordAlreadyExistException(CATEGORY_NOT_FOUND));
+
+        }
+        Category category1 = Category.builder()
                 .name(dto.getName())
-                .parentCategory(parentC)
+                .parentCategory(category)
                 .active(true)
                 .build();
-        categoryRepository.save(category);
+        categoryRepository.save(category1);
         return new ApiResponse(SUCCESSFULLY, true);
     }
 

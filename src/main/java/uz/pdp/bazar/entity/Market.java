@@ -7,6 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import uz.pdp.bazar.model.request.MarketDto;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,14 +34,18 @@ public class Market {
     private boolean active;
 
     private long longitude;
+
     private long latitude;
 
-    public static Market from(MarketDto branch, User user) {
+    private LocalDate activeDay;
+
+    public static Market from(MarketDto dto, User user) {
         return Market.builder()
-                .name(branch.getName())
+                .name(dto.getName())
                 .user(user)
-                .longitude(branch.getLongitude())
-                .latitude(branch.getLatitude())
+                .longitude(dto.getLongitude())
+                .latitude(dto.getLatitude())
+                .activeDay(dto.getActiveDay())
                 .delete(false)
                 .active(true)
                 .build();

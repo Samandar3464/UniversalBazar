@@ -14,7 +14,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/create")
-    public ApiResponse create(@RequestBody ProductDto productDto) {
+    public ApiResponse create(@ModelAttribute ProductDto productDto) {
         return productService.create(productDto);
     }
 
@@ -33,12 +33,20 @@ public class ProductController {
         return productService.delete(id);
     }
 
-    @GetMapping("/getAllByMarketId")
-    public ApiResponse getByMarketIdId(
+    @GetMapping("/getAllByMarketIdForOwners")
+    public ApiResponse getAllByMarketIdForOwners(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "id") Integer id) {
-        return productService.getAllByMarketId(page, size, id);
+        return productService.getAllByMarketIdForOwners(page, size, id);
+    }
+
+    @GetMapping("/getAllByMarketId")
+    public ApiResponse getByMarketIdIdForUsers(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "id") Integer id) {
+        return productService.getAllByMarketIdForUsers(page, size, id);
     }
 
     @GetMapping("/getNeactive")
@@ -54,5 +62,10 @@ public class ProductController {
     }
 
 
-
+    @GetMapping("/getAll")
+    public ApiResponse getAll(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        return productService.getAll(page, size);
+    }
 }

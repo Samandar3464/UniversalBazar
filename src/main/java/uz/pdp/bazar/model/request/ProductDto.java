@@ -1,6 +1,9 @@
 package uz.pdp.bazar.model.request;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,4 +27,6 @@ public class ProductDto {
     private Integer branchId;
 
     private double price;
+
+    private List<MultipartFile> photos;
 }

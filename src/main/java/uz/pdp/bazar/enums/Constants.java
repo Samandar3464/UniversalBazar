@@ -2,6 +2,7 @@ package uz.pdp.bazar.enums;
 public class Constants {
 
     public static final String USER_NOT_FOUND = "USER NOT FOUND";
+    public static final String NOT_ENOUGHT_QUENTITY = "NOT_ENOUGHT_QUENTITY";
     public static final String USER_ALREADY_EXIST = "USER ALREADY EXIST";
     public static final String TOKEN_TIME_OUT = "TOKEN TIME OUT";
     public static final String BLOCKED = "BLOCKED";

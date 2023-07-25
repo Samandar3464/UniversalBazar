@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class ProductResponseList {
 
-    private List<Product> products;
+    private List<ProductResponse> products;
 
     private long totalElement;
     private int totalPage;

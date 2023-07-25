@@ -54,6 +54,7 @@ public class User implements UserDetails {
     private LocalDateTime registeredDate;
 
     private boolean isBlocked;
+
     private boolean deleted;
 
     private Integer verificationCode;
