@@ -11,15 +11,12 @@ import uz.pdp.bazar.exception.UserNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.Dto;
 import uz.pdp.bazar.model.request.SoldProductDto;
-import uz.pdp.bazar.model.response.SoldProductTotalResponse;
 import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.ProductRepository;
 import uz.pdp.bazar.repository.SoldProductRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static uz.pdp.bazar.enums.Constants.*;
@@ -32,7 +29,6 @@ public class SoldProductService implements BaseService<SoldProductDto, UUID> {
     private final ProductRepository productRepository;
     private final MarketRepository marketRepository;
     private final UserRepository userRepository;
-
 
     @Override
     public ApiResponse create(SoldProductDto dto) {
@@ -108,16 +104,11 @@ public class SoldProductService implements BaseService<SoldProductDto, UUID> {
         return new ApiResponse(soldProducts, true);
     }
 
-    private final TestRepository testRepository;
 
     public ApiResponse getAllByMarketIdAndSorted(Dto dto) {
         Pageable page = PageRequest.of(dto.getPage(), dto.getSize());
-        Page<Test> soldProducts = testRepository.getAll(dto.getId(), dto.getStartDate(), dto.getEndDate(), page);
-        List<SoldProductTotalResponse> totalResponses = new ArrayList<>();
-        soldProducts.getContent().forEach(product ->{
-            totalResponses.add(SoldProductTotalResponse.from(productRepository.findById(product.getProductId()).orElseThrow(()-> new RecordNotFoundException(PRODUCT_NOT_FOUND)), product.getPrice(), product.getQuantity()));
-        });
-        return new ApiResponse(totalResponses, true);
+        Page<Object> soldProducts = soldProductRepository.getAll1(dto.getId(), dto.getStartDate(), dto.getEndDate(), page);
+        return new ApiResponse(soldProducts, true);
     }
 
 
