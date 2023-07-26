@@ -1,21 +1,25 @@
 package uz.pdp.bazar.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uz.pdp.bazar.entity.Market;
-import uz.pdp.bazar.entity.Product;
-import uz.pdp.bazar.entity.SoldProduct;
-import uz.pdp.bazar.entity.User;
+import uz.pdp.bazar.entity.*;
 import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.exception.UserNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
+import uz.pdp.bazar.model.request.Dto;
 import uz.pdp.bazar.model.request.SoldProductDto;
+import uz.pdp.bazar.model.response.SoldProductTotalResponse;
 import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.ProductRepository;
 import uz.pdp.bazar.repository.SoldProductRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static uz.pdp.bazar.enums.Constants.*;
@@ -73,12 +77,12 @@ public class SoldProductService implements BaseService<SoldProductDto, UUID> {
                 } else {
                     product.setQuantity(product.getQuantity() - v);
                 }
-            }else if (soldProduct.getQuantity() > dto.getQuantity()){
+            } else if (soldProduct.getQuantity() > dto.getQuantity()) {
                 double v = soldProduct.getQuantity() - dto.getQuantity();
-                product.setQuantity(product.getQuantity()+ v);
+                product.setQuantity(product.getQuantity() + v);
             }
 
-        }else {
+        } else {
             if (product.getQuantity() < dto.getQuantity()) {
                 throw new RecordNotFoundException(NOT_ENOUGHT_QUENTITY);
             }
@@ -97,4 +101,24 @@ public class SoldProductService implements BaseService<SoldProductDto, UUID> {
     public ApiResponse delete(UUID uuid) {
         return null;
     }
+
+    public ApiResponse getAllByMarketId(Dto dto) {
+        Pageable page = PageRequest.of(dto.getPage(), dto.getSize());
+        Page<SoldProduct> soldProducts = soldProductRepository.findAllByMarketIdAndSoldDateBetween(dto.getId(), dto.getStartDate(), dto.getEndDate(), page);
+        return new ApiResponse(soldProducts, true);
+    }
+
+    private final TestRepository testRepository;
+
+    public ApiResponse getAllByMarketIdAndSorted(Dto dto) {
+        Pageable page = PageRequest.of(dto.getPage(), dto.getSize());
+        Page<Test> soldProducts = testRepository.getAll(dto.getId(), dto.getStartDate(), dto.getEndDate(), page);
+        List<SoldProductTotalResponse> totalResponses = new ArrayList<>();
+        soldProducts.getContent().forEach(product ->{
+            totalResponses.add(SoldProductTotalResponse.from(productRepository.findById(product.getProductId()).orElseThrow(()-> new RecordNotFoundException(PRODUCT_NOT_FOUND)), product.getPrice(), product.getQuantity()));
+        });
+        return new ApiResponse(totalResponses, true);
+    }
+
+
 }

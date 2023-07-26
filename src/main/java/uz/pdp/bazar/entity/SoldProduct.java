@@ -1,6 +1,8 @@
 package uz.pdp.bazar.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -29,6 +31,7 @@ public class SoldProduct {
 
     private double price;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime soldDate;
 
     @JsonIgnore
