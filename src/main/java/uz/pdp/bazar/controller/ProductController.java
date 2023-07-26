@@ -68,4 +68,12 @@ public class ProductController {
             @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return productService.getAll(page, size);
     }
+
+    @GetMapping("/getAllByCategoryId")
+    public ApiResponse getAllByCategoryId(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "id") Integer id) {
+        return productService.getAllByCategory(id, page, size);
+    }
 }

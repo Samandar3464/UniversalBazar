@@ -26,6 +26,8 @@ public class ProductDto {
 
     private Integer marketId;
 
+    private Integer categoryId;
+
     private double price;
 
     private List<MultipartFile> photos;

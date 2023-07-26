@@ -49,4 +49,7 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Attachment> photos;
+
+    @ManyToOne
+    private Category category;
 }

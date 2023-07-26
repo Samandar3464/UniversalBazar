@@ -7,16 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uz.pdp.bazar.entity.Attachment;
-import uz.pdp.bazar.entity.Market;
-import uz.pdp.bazar.entity.Measurement;
-import uz.pdp.bazar.entity.Product;
+import uz.pdp.bazar.entity.*;
 import uz.pdp.bazar.exception.RecordAlreadyExistException;
 import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.ProductDto;
 import uz.pdp.bazar.model.response.ProductResponse;
 import uz.pdp.bazar.model.response.ProductResponseList;
+import uz.pdp.bazar.repository.CategoryRepository;
 import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.MeasurementRepository;
 import uz.pdp.bazar.repository.ProductRepository;
@@ -36,6 +34,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     private final MeasurementRepository measurementRepository;
     private final MarketRepository marketRepository;
     private final AttachmentService attachmentService;
+    private final CategoryRepository categoryRepository;
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,6 +42,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         if (productRepository.existsByMarketIdAndMeasurementIdAndName(dto.getMarketId(), dto.getMeasurementId(), dto.getName())) {
             throw new RecordAlreadyExistException(PRODUCT_ALREADY_EXIST);
         }
+        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new RecordNotFoundException(CATEGORY_NOT_FOUND));
         Market market = marketRepository.findById(dto.getMarketId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
         Measurement measurement = measurementRepository.findById(dto.getMeasurementId()).orElseThrow(() -> new RecordNotFoundException(MEASUREMENT_NOT_FOUND));
         List<Attachment> attachments = attachmentService.saveToSystemListFile(dto.getPhotos());
@@ -50,6 +50,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
                 .market(market)
                 .measurement(measurement)
                 .photos(attachments)
+                .category(category)
                 .name(dto.getName())
                 .quantity(dto.getQuantity())
                 .description(dto.getDescription())
@@ -75,6 +76,9 @@ public class ProductService implements BaseService<ProductDto, Integer> {
     public ApiResponse update(ProductDto dto) {
         Product product = productRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException(PRODUCT_NOT_FOUND));
         Measurement measurement = measurementRepository.findById(dto.getMeasurementId()).orElseThrow(() -> new RecordNotFoundException(MEASUREMENT_NOT_FOUND));
+        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new RecordNotFoundException(CATEGORY_NOT_FOUND));
+
+        product.setCategory(category);
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         product.setMeasurement(measurement);
@@ -162,5 +166,25 @@ public class ProductService implements BaseService<ProductDto, Integer> {
                 .size(productList.getSize())
                 .build();
         return new ApiResponse(productResponseList, true);
+    }
+
+
+    public ApiResponse getAllByCategory(Integer categoryId, Integer page, Integer size) {
+        Pageable page1 = PageRequest.of(page, size);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RecordNotFoundException(CATEGORY_NOT_FOUND));
+
+        List<Category> categoryList = categoryRepository.findAllByParentCategoryAndActiveTrue(category);
+        Page<Product> productList = null;
+        if (categoryList.isEmpty()) {
+            productList = productRepository.findAllByCategoryInAndQuantityGreaterThanAndActiveTrueAndDeletedFalse(List.of(category), 0, page1);
+        } else {
+            categoryList.add(category);
+            productList = productRepository.findAllByCategoryInAndQuantityGreaterThanAndActiveTrueAndDeletedFalse(categoryList, 0, page1);
+        }
+        List<ProductResponse> productResponses = new ArrayList<>();
+        productList.getContent().forEach(product1 -> {
+            productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
+        });
+        return new ApiResponse(productResponses, true);
     }
 }
