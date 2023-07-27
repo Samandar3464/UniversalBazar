@@ -19,6 +19,6 @@ public interface SoldProductRepository extends JpaRepository<SoldProduct, UUID> 
 //    Page<SoldProduct> getAll(Integer marketId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
 
-    @Query(value = "select s.product.id , count (s.quantity) , sum (s.price) as price from SoldProduct s where s.market.id =?1 and s.soldDate > ?2 and s.soldDate < ?3 group by s.product.id")
-    Page<Object> getAll1(Integer marketId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    @Query(value = "select s.product.id as productId, count (s.quantity) as quantity, sum (s.price)  as price from SoldProduct s where s.market.id =?1 and s.soldDate > ?2 and s.soldDate < ?3 group by s.product.id")
+    Page<SoldProduct> getAll(Integer marketId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }
