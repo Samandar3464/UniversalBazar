@@ -11,11 +11,10 @@ import java.util.Optional;
 
 public interface MarketRepository extends JpaRepository<Market, Integer> {
 
-    Optional<Market> findByUserIdAndName(Integer userId, String name);
     Optional<Market> findByName(String name);
 
     List<Market> findAllByActiveTrueAndDeleteFalse();
-    Optional<Market> findAllByUserIdAndDeleteFalse(Integer userId);
+    Optional<Market> findByIdAndDeleteFalse(Integer id);
 
     Page<Market> findAllByDeleteFalse(Pageable pageable);
 }

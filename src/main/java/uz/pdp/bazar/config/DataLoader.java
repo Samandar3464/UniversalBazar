@@ -45,7 +45,7 @@ public class DataLoader implements CommandLineRunner {
             Role user = Role.builder().id(3).name(USER).build();
             Role seller = Role.builder().id(4).name(SELLER).build();
 
-            roleRepository.saveAll(List.of(supperAdmin, admin, user,seller));
+            roleRepository.saveAll(List.of(supperAdmin, admin, user, seller));
 
             User superAdmin = User.builder()
                     .fullName("Super Admin")
@@ -60,18 +60,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
             userRepository.save(superAdmin);
 
-            User admin1 = User.builder()
-                    .fullName(" Admin")
-                    .phoneNumber("111111112")
-                    .birthDate(LocalDate.parse("1998-05-13"))
-                    .gender(Gender.ERKAK)
-                    .registeredDate(LocalDateTime.now())
-                    .verificationCode(0)
-                    .password(passwordEncoder.encode("111111"))
-                    .isBlocked(true)
-                    .role(admin)
-                    .build();
-            User saveAdmin = userRepository.save(admin1);
 
             User user1 = User.builder()
                     .fullName("Seller")
@@ -86,20 +74,27 @@ public class DataLoader implements CommandLineRunner {
                     .build();
             userRepository.save(user1);
 
-
             Market market = Market.builder()
                     .name("Test Branch")
-                    .user(saveAdmin)
                     .delete(false)
                     .active(true)
                     .build();
-            marketRepository.save(market);
+            Market saveMarket = marketRepository.save(market);
 
-//            Category category = Category.builder()
-//                    .name("BIG CATEGORY")
-//                    .parentCategory(null)
-//                    .build();
-//            categoryRepository.save(category);
+            User admin1 = User.builder()
+                    .fullName(" Admin")
+                    .phoneNumber("111111112")
+                    .birthDate(LocalDate.parse("1998-05-13"))
+                    .gender(Gender.ERKAK)
+                    .registeredDate(LocalDateTime.now())
+                    .verificationCode(0)
+                    .password(passwordEncoder.encode("111111"))
+                    .isBlocked(true)
+                    .market(saveMarket)
+                    .role(admin)
+                    .build();
+            User saveAdmin = userRepository.save(admin1);
+
         }
     }
 }

@@ -38,4 +38,6 @@ public class UserRegisterDto {
 
     private String romeName;
 
+    private Integer marketId;
+
 }

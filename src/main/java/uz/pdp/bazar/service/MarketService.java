@@ -8,14 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.pdp.bazar.entity.Market;
-import uz.pdp.bazar.entity.User;
 import uz.pdp.bazar.exception.RecordNotFoundException;
-import uz.pdp.bazar.exception.UserNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.MarketDto;
 import uz.pdp.bazar.model.response.BranchResponseListForAdmin;
 import uz.pdp.bazar.repository.MarketRepository;
-import uz.pdp.bazar.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -28,7 +25,6 @@ import static uz.pdp.bazar.enums.Constants.*;
 public class MarketService implements BaseService<MarketDto, Integer> {
 
     private final MarketRepository marketRepository;
-    private final UserRepository userRepository;
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
@@ -37,12 +33,7 @@ public class MarketService implements BaseService<MarketDto, Integer> {
         if (byName.isPresent()) {
             throw new RecordNotFoundException(MARKET_NAME_ALREADY_EXIST);
         }
-        Optional<Market> byBusinessIdAndName = marketRepository.findByUserIdAndName(branch.getUserId(),branch.getName());
-        if (byBusinessIdAndName.isPresent()) {
-            throw new RecordNotFoundException(THIS_USER_ALREADY_HAVE_MARKET);
-        }
-        User user = userRepository.findById(branch.getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        Market marketNew = Market.from(branch, user);
+        Market marketNew = Market.from(branch);
         marketRepository.save(marketNew);
         return new ApiResponse(SUCCESSFULLY, true);
     }
@@ -57,7 +48,7 @@ public class MarketService implements BaseService<MarketDto, Integer> {
     @Override
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse update(MarketDto dto) {
-        Market market = marketRepository.findById(dto.getId()).orElseThrow(()-> new RecordNotFoundException(MARKET_NOT_FOUND));
+        Market market = marketRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
         market.setName(market.getName());
         market.setActive(dto.isActive());
         market.setLongitude(dto.getLongitude());
@@ -78,11 +69,8 @@ public class MarketService implements BaseService<MarketDto, Integer> {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getByUserId(Integer integer) {
-        Optional<Market> allByUserId = marketRepository.findAllByUserIdAndDeleteFalse(integer);
-        if (allByUserId.isPresent()) {
-            throw new RecordNotFoundException(MARKET_NOT_FOUND);
-        }
-        return new ApiResponse(allByUserId, true);
+        Market market = marketRepository.findByIdAndDeleteFalse(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        return new ApiResponse(market, true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -99,6 +87,7 @@ public class MarketService implements BaseService<MarketDto, Integer> {
         marketRepository.save(market);
         return new ApiResponse(market, true);
     }
+
     public ApiResponse activate(Integer integer, LocalDate newActiveDay) {
         Market market = marketRepository.findById(integer).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
         market.setActive(true);

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uz.pdp.bazar.config.jwtConfig.JwtGenerate;
+import uz.pdp.bazar.entity.Market;
 import uz.pdp.bazar.entity.User;
 import uz.pdp.bazar.exception.RecordAlreadyExistException;
 import uz.pdp.bazar.exception.RecordNotFoundException;
@@ -25,6 +26,7 @@ import uz.pdp.bazar.model.response.NotificationMessageResponse;
 import uz.pdp.bazar.model.response.TokenResponse;
 import uz.pdp.bazar.model.response.UserResponseDto;
 import uz.pdp.bazar.model.response.UserResponseListForAdmin;
+import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.RoleRepository;
 import uz.pdp.bazar.repository.UserRepository;
 
@@ -46,6 +48,7 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
     private final AuthenticationManager authenticationManager;
     private final FireBaseMessagingService fireBaseMessagingService;
     private final PasswordEncoder passwordEncoder;
+    private final MarketRepository marketRepository;
 
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,7 +58,9 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
         if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
             throw new RecordAlreadyExistException(USER_ALREADY_EXIST);
         }
+        Market market = marketRepository.findById(dto.getMarketId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
         User user = User.from(dto);
+        user.setMarket(market);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(roleRepository.findByName(dto.getRomeName()).orElseThrow(() -> new RecordNotFoundException(ROLE_NOT_FOUND)));
         userRepository.save(user);
@@ -168,7 +173,7 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
 
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse getUserList(Integer page, Integer size) {
-        Page<User> all = userRepository.findAll( PageRequest.of(page, size));
+        Page<User> all = userRepository.findAll(PageRequest.of(page, size));
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         all.getContent().forEach(user -> userResponseDtoList.add(UserResponseDto.from(user)));
         return new ApiResponse(new UserResponseListForAdmin(userResponseDtoList, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);

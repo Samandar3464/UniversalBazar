@@ -29,11 +29,6 @@ public class Market {
     @Column(nullable = false,unique = true)
     private String name;
 
-    @OneToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-    private User user;
-
     private boolean delete;
 
     private boolean active;
@@ -45,10 +40,9 @@ public class Market {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate activeDay;
 
-    public static Market from(MarketDto dto, User user) {
+    public static Market from(MarketDto dto) {
         return Market.builder()
                 .name(dto.getName())
-                .user(user)
                 .longitude(dto.getLongitude())
                 .latitude(dto.getLatitude())
                 .activeDay(dto.getActiveDay())
