@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BranchResponseListForAdmin {
+public class MarketResponseListForAdmin {
 
     private List<Market> marketResponseDtoList;
     private long allSize;

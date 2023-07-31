@@ -56,7 +56,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .deleted(false)
-                .active(false)
+                .active(true)
                 .createdDate(LocalDateTime.now())
                 .build();
         productRepository.save(product);

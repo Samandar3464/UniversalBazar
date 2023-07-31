@@ -11,7 +11,7 @@ import uz.pdp.bazar.entity.Market;
 import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.MarketDto;
-import uz.pdp.bazar.model.response.BranchResponseListForAdmin;
+import uz.pdp.bazar.model.response.MarketResponseListForAdmin;
 import uz.pdp.bazar.repository.MarketRepository;
 
 import java.time.LocalDate;
@@ -28,12 +28,12 @@ public class MarketService implements BaseService<MarketDto, Integer> {
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse create(MarketDto branch) {
-        Optional<Market> byName = marketRepository.findByName(branch.getName());
+    public ApiResponse create(MarketDto dto) {
+        Optional<Market> byName = marketRepository.findByName(dto.getName());
         if (byName.isPresent()) {
             throw new RecordNotFoundException(MARKET_NAME_ALREADY_EXIST);
         }
-        Market marketNew = Market.from(branch);
+        Market marketNew = Market.from(dto);
         marketRepository.save(marketNew);
         return new ApiResponse(SUCCESSFULLY, true);
     }
@@ -77,7 +77,7 @@ public class MarketService implements BaseService<MarketDto, Integer> {
     public ApiResponse getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Market> all = marketRepository.findAllByDeleteFalse(pageable);
-        return new ApiResponse(new BranchResponseListForAdmin(
+        return new ApiResponse(new MarketResponseListForAdmin(
                 all.getContent(), all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
     }
 
