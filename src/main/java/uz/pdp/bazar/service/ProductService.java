@@ -12,6 +12,7 @@ import uz.pdp.bazar.exception.RecordAlreadyExistException;
 import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.ProductDto;
+import uz.pdp.bazar.model.request.SearchDto;
 import uz.pdp.bazar.model.response.ProductResponse;
 import uz.pdp.bazar.model.response.ProductResponseList;
 import uz.pdp.bazar.repository.CategoryRepository;
@@ -186,5 +187,20 @@ public class ProductService implements BaseService<ProductDto, Integer> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
         });
         return new ApiResponse(productResponses, true);
+    }
+
+
+    public ApiResponse searchByCategory(SearchDto dto) {
+        List<Product> productList;
+        if (dto.getId() != null) {
+            productList = productRepository.findAllByCategoryIdAndNameIsContainingIgnoreCase(dto.getId(), dto.getName());
+        } else {
+            productList = productRepository.findAllByNameIsContainingIgnoreCase(dto.getName());
+        }
+        List<ProductResponse> productResponseList = new ArrayList<>();
+        productList.forEach(product1 -> {
+            productResponseList.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
+        });
+        return new ApiResponse(productResponseList, true);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.ProductDto;
+import uz.pdp.bazar.model.request.SearchDto;
 import uz.pdp.bazar.service.ProductService;
 
 @RestController
@@ -75,5 +76,10 @@ public class ProductController {
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "id") Integer id) {
         return productService.getAllByCategory(id, page, size);
+    }
+
+    @PostMapping("/searchByCategory")
+    public ApiResponse searchByCategory(@RequestBody SearchDto dto) {
+        return productService.searchByCategory(dto);
     }
 }
