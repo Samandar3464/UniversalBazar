@@ -53,8 +53,10 @@ public class CategoryService implements BaseService<CategoryDto, Integer> {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse update(CategoryDto dto) {
         Category category = categoryRepository.findById(dto.getId()).orElseThrow(() -> new RecordAlreadyExistException(CATEGORY_NOT_FOUND));
-        Category categoryParent = categoryRepository.findById(dto.getParentCategoryId()).orElseThrow(() -> new RecordAlreadyExistException(CATEGORY_NOT_FOUND));
-        category.setParentCategory(categoryParent);
+        if(dto.getParentCategoryId()!=null){
+            Category categoryParent = categoryRepository.findById(dto.getParentCategoryId()).orElseThrow(() -> new RecordAlreadyExistException(CATEGORY_NOT_FOUND));
+            category.setParentCategory(categoryParent);
+        }
         category.setName(dto.getName());
         categoryRepository.save(category);
         return new ApiResponse(SUCCESSFULLY, true);
