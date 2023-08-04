@@ -58,8 +58,14 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
         if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
             throw new RecordAlreadyExistException(USER_ALREADY_EXIST);
         }
-        Market market = marketRepository.findById(dto.getMarketId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        Market market=null;
+        if (dto.getMarketId()!=null){
+             market = marketRepository.findById(dto.getMarketId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
+        }
         User user = User.from(dto);
+        Integer integer = verificationCodeGenerator();
+        System.out.println("code ->>>>>"+integer);
+        user.setVerificationCode(integer);
         user.setMarket(market);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(roleRepository.findByName(dto.getRomeName()).orElseThrow(() -> new RecordNotFoundException(ROLE_NOT_FOUND)));
@@ -120,7 +126,7 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
         user.setVerificationCode(0);
         user.setBlocked(true);
         userRepository.save(user);
-        return new ApiResponse(USER_VERIFIED_SUCCESSFULLY, true);
+        return new ApiResponse(new TokenResponse(JwtGenerate.generateAccessToken(user), UserResponseDto.from(user)), true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -132,7 +138,13 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
 //        sendSms(user.getPhoneNumber(), verificationCodeGenerator());
         return new ApiResponse(SUCCESSFULLY, true);
     }
-
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse changePassword(String number, String password) {
+        User user = checkByNumber(number);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        return new ApiResponse(SUCCESSFULLY, true, new TokenResponse(JwtGenerate.generateAccessToken(user), UserResponseDto.from(user)));
+    }
     @ResponseStatus(HttpStatus.OK)
     @Transactional(rollbackFor = {Exception.class})
     public ApiResponse addBlockUserByID(Integer id) {
@@ -160,15 +172,6 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
         user.setFireBaseToken(fireBaseTokenRegisterDto.getFireBaseToken());
         userRepository.save(user);
         return new ApiResponse(SUCCESSFULLY, true);
-    }
-
-
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse changePassword(String number, String password) {
-        User user = checkByNumber(number);
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-        return new ApiResponse(SUCCESSFULLY, true, new TokenResponse(JwtGenerate.generateAccessToken(user), UserResponseDto.from(user)));
     }
 
     @ResponseStatus(HttpStatus.OK)

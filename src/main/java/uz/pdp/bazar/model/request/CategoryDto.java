@@ -16,6 +16,5 @@ public class CategoryDto {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
     private Integer parentCategoryId;
 }

@@ -75,8 +75,7 @@ public class UserController {
 
     @GetMapping("/getUserList")
     public ApiResponse getUserList(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                   @RequestParam(name = "size", defaultValue = "5") Integer size,
-                                   @RequestParam(name = "branchId") Integer branchId) {
+                                   @RequestParam(name = "size", defaultValue = "5") Integer size) {
         return userService.getUserList(page, size);
     }
 

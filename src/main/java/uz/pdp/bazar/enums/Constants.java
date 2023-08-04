@@ -32,7 +32,7 @@ public class Constants {
     public static final String FILE_SIZE_MUST_BU_10MB_OR_LOWER = "FILE SIZE MUST BU 10MB OR LOWER";
     public static final String ROLE_ALREADY_EXIST = "ROLE ALREADY EXIST!!!";
     public static final String ROLE_NOT_AVAILABLE = "ROLE NOT AVAILABLE";
-    public static final String MARKET_NOT_FOUND = "BRANCH NOT FOUND";
+    public static final String MARKET_NOT_FOUND = "MARKET NOT FOUND";
     public static final String MARKET_NAME_ALREADY_EXIST = "MARKET NAME ALREADY EXIST";
     public static final String THIS_USER_ALREADY_HAVE_MARKET = "THIS_USER_ALREADY_HAVE_MARKET";
     public static final String MEASUREMENT_NOT_FOUND = "MEASUREMENT NOT FOUND";

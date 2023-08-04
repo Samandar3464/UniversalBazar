@@ -78,6 +78,7 @@ public class DataLoader implements CommandLineRunner {
                     .name("Test Branch")
                     .delete(false)
                     .active(true)
+                    .activeDay(LocalDate.now().plusDays(10))
                     .build();
             Market saveMarket = marketRepository.save(market);
 

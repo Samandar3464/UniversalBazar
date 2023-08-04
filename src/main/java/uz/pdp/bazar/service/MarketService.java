@@ -49,7 +49,7 @@ public class MarketService implements BaseService<MarketDto, Integer> {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse update(MarketDto dto) {
         Market market = marketRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException(MARKET_NOT_FOUND));
-        market.setName(market.getName());
+        market.setName(dto.getName());
         market.setLongitude(dto.getLongitude());
         market.setLatitude(dto.getLatitude());
         marketRepository.save(market);
