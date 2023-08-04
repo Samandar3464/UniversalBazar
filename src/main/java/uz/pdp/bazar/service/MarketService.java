@@ -52,6 +52,7 @@ public class MarketService implements BaseService<MarketDto, Integer> {
         market.setName(dto.getName());
         market.setLongitude(dto.getLongitude());
         market.setLatitude(dto.getLatitude());
+        market.setAddress(dto.getAddress());
         marketRepository.save(market);
         return new ApiResponse(SUCCESSFULLY, true);
     }
