@@ -29,6 +29,8 @@ public class Market {
     @Column(nullable = false,unique = true)
     private String name;
 
+    private String address;
+
     private boolean delete;
 
     private boolean active;
@@ -46,6 +48,7 @@ public class Market {
                 .longitude(dto.getLongitude())
                 .latitude(dto.getLatitude())
                 .activeDay(dto.getActiveDay())
+                .address(dto.getAddress())
                 .delete(false)
                 .active(true)
                 .build();

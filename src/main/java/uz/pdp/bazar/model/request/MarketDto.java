@@ -23,6 +23,8 @@ public class MarketDto {
     @Column(nullable = false ,unique = true)
     private String name;
 
+    private String address;
+
     private boolean active;
 
     private long longitude;
