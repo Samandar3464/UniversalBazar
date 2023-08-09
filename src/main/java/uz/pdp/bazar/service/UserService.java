@@ -22,10 +22,7 @@ import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.exception.UserNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.*;
-import uz.pdp.bazar.model.response.NotificationMessageResponse;
-import uz.pdp.bazar.model.response.TokenResponse;
-import uz.pdp.bazar.model.response.UserResponseDto;
-import uz.pdp.bazar.model.response.UserResponseListForAdmin;
+import uz.pdp.bazar.model.response.*;
 import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.RoleRepository;
 import uz.pdp.bazar.repository.UserRepository;
@@ -179,7 +176,7 @@ public class UserService implements BaseService<UserRegisterDto, Integer> {
         Page<User> all = userRepository.findAll(PageRequest.of(page, size));
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
         all.getContent().forEach(user -> userResponseDtoList.add(UserResponseDto.from(user)));
-        return new ApiResponse(new UserResponseListForAdmin(userResponseDtoList, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
+        return new ApiResponse(new PageResponseDto(userResponseDtoList, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -44,10 +44,17 @@ public class MarketController {
 
 
     @GetMapping("/getAll")
-    public ApiResponse getAllBranches(
+    public ApiResponse getAllMarkets(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "5") int size) {
         return marketService.getAll(page, size);
+    }
+
+    @GetMapping("/getAllToDto")
+    public ApiResponse getAllToDto(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size) {
+        return marketService.getAllToDto(page, size);
     }
 
     @GetMapping("/activate")

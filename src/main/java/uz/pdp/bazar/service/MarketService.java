@@ -11,10 +11,13 @@ import uz.pdp.bazar.entity.Market;
 import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.MarketDto;
-import uz.pdp.bazar.model.response.MarketResponseListForAdmin;
+import uz.pdp.bazar.model.response.MarketResponseDto;
+import uz.pdp.bazar.model.response.PageResponseDto;
 import uz.pdp.bazar.repository.MarketRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static uz.pdp.bazar.enums.Constants.*;
@@ -77,8 +80,18 @@ public class MarketService implements BaseService<MarketDto, Integer> {
     public ApiResponse getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Market> all = marketRepository.findAllByDeleteFalse(pageable);
-        return new ApiResponse(new MarketResponseListForAdmin(
+        return new ApiResponse(new PageResponseDto(
                 all.getContent(), all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse getAllToDto(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Market> all = marketRepository.findAllByDeleteFalse(pageable);
+        List<MarketResponseDto> responseDtoList = new ArrayList<>();
+        all.getContent().forEach(market -> responseDtoList.add(MarketResponseDto.from(market)));
+        return new ApiResponse(new PageResponseDto(
+                responseDtoList, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
     }
 
     public ApiResponse deActive(Integer integer) {

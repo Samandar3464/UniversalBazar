@@ -13,8 +13,8 @@ import uz.pdp.bazar.exception.RecordNotFoundException;
 import uz.pdp.bazar.model.common.ApiResponse;
 import uz.pdp.bazar.model.request.ProductDto;
 import uz.pdp.bazar.model.request.SearchDto;
+import uz.pdp.bazar.model.response.PageResponseDto;
 import uz.pdp.bazar.model.response.ProductResponse;
-import uz.pdp.bazar.model.response.ProductResponseList;
 import uz.pdp.bazar.repository.CategoryRepository;
 import uz.pdp.bazar.repository.MarketRepository;
 import uz.pdp.bazar.repository.MeasurementRepository;
@@ -106,13 +106,8 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         productList.getContent().forEach(product1 -> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
         });
-        ProductResponseList productResponseList = ProductResponseList.builder()
-                .products(productResponses)
-                .totalElement(productList.getTotalElements())
-                .totalPage(productList.getTotalPages())
-                .size(productList.getSize())
-                .build();
-        return new ApiResponse(productResponseList, true);
+        return new ApiResponse(new PageResponseDto(
+                productResponses, productList.getTotalElements(), productList.getTotalPages(), productList.getNumber()), true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -123,13 +118,8 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         productList.getContent().forEach(product1 -> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
         });
-        ProductResponseList productResponseList = ProductResponseList.builder()
-                .products(productResponses)
-                .totalElement(productList.getTotalElements())
-                .totalPage(productList.getTotalPages())
-                .size(productList.getSize())
-                .build();
-        return new ApiResponse(productResponseList, true);
+        return new ApiResponse(new PageResponseDto(
+                productResponses, productList.getTotalElements(), productList.getTotalPages(), productList.getNumber()), true);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -160,13 +150,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         productList.getContent().forEach(product1 -> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
         });
-        ProductResponseList productResponseList = ProductResponseList.builder()
-                .products(productResponses)
-                .totalElement(productList.getTotalElements())
-                .totalPage(productList.getTotalPages())
-                .size(productList.getSize())
-                .build();
-        return new ApiResponse(productResponseList, true);
+        return new ApiResponse(new PageResponseDto(productResponses,productList.getTotalElements(),productList.getTotalPages(),productList.getSize()), true);
     }
 
 
