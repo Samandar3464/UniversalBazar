@@ -51,10 +51,8 @@ public class MarketController {
     }
 
     @GetMapping("/getAllToDto")
-    public ApiResponse getAllToDto(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "5") int size) {
-        return marketService.getAllToDto(page, size);
+    public ApiResponse getAllToDto() {
+        return marketService.getAllToDto();
     }
 
     @GetMapping("/activate")

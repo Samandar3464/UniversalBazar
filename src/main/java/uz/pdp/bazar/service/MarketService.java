@@ -85,13 +85,11 @@ public class MarketService implements BaseService<MarketDto, Integer> {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse getAllToDto(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Market> all = marketRepository.findAllByDeleteFalse(pageable);
+    public ApiResponse getAllToDto() {
+        List<Market> all = marketRepository.findAllByDeleteFalse();
         List<MarketResponseDto> responseDtoList = new ArrayList<>();
-        all.getContent().forEach(market -> responseDtoList.add(MarketResponseDto.from(market)));
-        return new ApiResponse(new PageResponseDto(
-                responseDtoList, all.getTotalElements(), all.getTotalPages(), all.getNumber()), true);
+        all.forEach(market -> responseDtoList.add(MarketResponseDto.from(market)));
+        return new ApiResponse(responseDtoList, true);
     }
 
     public ApiResponse deActive(Integer integer) {

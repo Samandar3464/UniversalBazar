@@ -17,4 +17,5 @@ public interface MarketRepository extends JpaRepository<Market, Integer> {
     Optional<Market> findByIdAndDeleteFalse(Integer id);
 
     Page<Market> findAllByDeleteFalse(Pageable pageable);
+    List<Market> findAllByDeleteFalse();
 }
