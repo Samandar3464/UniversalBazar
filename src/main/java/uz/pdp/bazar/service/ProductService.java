@@ -150,7 +150,7 @@ public class ProductService implements BaseService<ProductDto, Integer> {
         productList.getContent().forEach(product1 -> {
             productResponses.add(ProductResponse.from(product1, attachmentService.getUrlList(product1.getPhotos())));
         });
-        return new ApiResponse(new PageResponseDto(productResponses,productList.getTotalElements(),productList.getTotalPages(),productList.getSize()), true);
+        return new ApiResponse(new PageResponseDto(productResponses,productList.getTotalElements(),productList.getTotalPages(),productList.getNumber()), true);
     }
 
 
