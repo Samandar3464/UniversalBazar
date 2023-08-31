@@ -6,14 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import uz.pdp.bazar.entity.Market;
-import uz.pdp.bazar.entity.Role;
-import uz.pdp.bazar.entity.User;
+import uz.pdp.bazar.entity.*;
 import uz.pdp.bazar.enums.Gender;
-import uz.pdp.bazar.repository.MarketRepository;
-import uz.pdp.bazar.repository.CategoryRepository;
-import uz.pdp.bazar.repository.RoleRepository;
-import uz.pdp.bazar.repository.UserRepository;
+import uz.pdp.bazar.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +25,7 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final MarketRepository marketRepository;
     private final CategoryRepository categoryRepository;
+private final MeasurementRepository measurementRepository;
 
     @Value("${spring.sql.init.mode}")
     private String initMode;
@@ -96,7 +92,10 @@ public class DataLoader implements CommandLineRunner {
                     .role(admin)
                     .build();
             User saveAdmin = userRepository.save(admin1);
-
+            Measurement measurement= Measurement.builder().name("kilo").active(true).build();
+            measurementRepository.save(measurement);
+            Category category = Category.builder().name("kiyim").active(true).build();
+            categoryRepository.save(category);
         }
     }
 }
